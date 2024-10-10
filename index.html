@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        .display {
+            background-color: #f9f9f9;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 5px;
+            width: 50%;
+            z-index: 1;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10vw;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .signup-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: white;
+            width: 20%;
+            padding: 2rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 1rem;
+        }
+
+        input {
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        button {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="signup-container">
+        <h2>Sign Up</h2>
+        <form id="signup-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" required>
+
+            <button type="submit">Sign Up</button>
+
+        </form>
+
+    </div>
+
+    <div class="display"></div>
+
+    <script>
+
+
+        // Function to display user data
+        function displayUserData() {
+            const users = JSON.parse(localStorage.getItem('user')) || [];
+            const displayDiv = document.querySelector('.display');
+
+            if (users.length === 0) {
+                displayDiv.innerHTML = '<p>No users found.</p>';
+                return;
+            }
+
+            let tableHTML = `
+                        <table>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                                <th>Delete</th>
+                            </tr>
+                    `;
+
+            users.forEach(user => {
+                tableHTML += `
+                            <tr>
+                                <td>${user.username}</td>
+                                <td>${user.email}</td>
+                                <td>${user.password}</td>
+                                <td><button onclick="deleteUser('${user.username}')">Delete</button></td>
+                            </tr>
+                        `;
+            });
+
+            tableHTML += '</table>';
+            displayDiv.innerHTML = tableHTML;
+        }
+
+
+        //delete function
+        function deleteUser(username) {
+            
+            let users = JSON.parse(localStorage.getItem('user'));
+            users = users.filter(user => user.username !== username);
+            
+            localStorage.setItem('user', JSON.stringify(users));
+            displayUserData();
+        }
+
+        // Call the function to display user data
+        displayUserData();
+
+        document.getElementById('signup-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const user = {
+                username: username,
+                email: email,
+                password: password
+            };
+
+            let users = JSON.parse(localStorage.getItem("user")) || []
+
+            users.push(user);
+
+            localStorage.setItem('user', JSON.stringify(users));
+            displayUserData();
+
+            // alert('Sign up successful!');
+
+            // Clear the form
+            this.reset();
+        });
+
+    </script>
+</body>
+
+</html>
